@@ -1,18 +1,21 @@
 <template>
-  <div id="app">
+  <div>
     <header>
       <span>Vue.js PWA</span>
     </header>
     <main>
-      <img src="./assets/logo.png" alt="Vue.js PWA">
-      <router-view></router-view>
+      {{ msg }}
     </main>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'app'
+  data () {
+    return {
+      msg: 'Welcome to Your Vue.js App'
+    }
+  }
 }
 </script>
 

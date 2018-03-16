@@ -24,13 +24,23 @@
     <% for (var chunk of webpack.chunks) {
         for (var file of chunk.files) {
           if (file.match(/\.(js|css)$/)) { %>
-    <link rel="<%= chunk.initial?'preload':'prefetch' %>" href="<%= htmlWebpackPlugin.files.publicPath + file %>" as="<%= file.match(/\.css$/)?'style':'script' %>"><% }}} %>
+    <link rel="<%= chunk.initial?'preload':'prefetch' %>" href="<%= htmlWebpackPlugin.files.publicPath + file %>" as="<%= file.match(/\.css$/)?'style':'script' %>"> <% }}} %>
   </head>
   <body>
+    {% load render_bundle from webpack_loader %}
+    {% render_bundle 'app' 'css' %}
     <noscript>
       This is your fallback content in case JavaScript fails to load.
     </noscript>
-    <div id="app"></div>
+
+    <div id="app">
+      <app></app>
+    </div>
+
+    {% render_bundle 'manifest' %}
+    {% render_bundle 'vendor' %}
+    {% render_bundle 'app'%}
+
     <!-- Todo: only include in production -->
     <%= htmlWebpackPlugin.options.serviceWorkerLoader %>
     <!-- built files will be auto injected -->

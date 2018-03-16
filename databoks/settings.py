@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_extensions',
     'rest_framework',
+    'webpack_loader',
 
     'databoks.apps.authentication'
 ]
@@ -61,7 +62,7 @@ ROOT_URLCONF = 'databoks.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['databoks'],
+        'DIRS': [os.path.join(BASE_DIR, 'public')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -124,8 +125,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/public/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'public')
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'dist'),
+)
 # CORS_ORIGIN_WHITELIST = (
 #     '0.0.0.0:4000',
 #     'localhost:4000',
@@ -146,4 +152,15 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 20,
+}
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': not DEBUG,
+        'BUNDLE_DIR_NAME': 'public/assets/js',
+        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+        'POLL_INTERVAL': 0.1,
+        'TIMEOUT': None,
+        'IGNORE': ['.+\.hot-update.js', '.+\.map']
+    }
 }
