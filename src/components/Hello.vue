@@ -1,6 +1,9 @@
 <template>
   <div class="hello">
-    <form v-on:submit.prevent="onSubmit(email, password)">
+    <form v-if='!isAuthenticated' v-on:submit.prevent="onSubmit(email, password)">
+      <div class="">
+        {{isAuthenticated}} {{ errors }}
+      </div>
       <fieldset class="form-group">
         <input
           class="form-control form-control-lg"
@@ -19,13 +22,17 @@
         Sign in
       </button>
     </form>
+    <div v-if='isAuthenticated'>
+      <button v-on:click="onLogout()" class="btn btn-lg btn-primary pull-xs-right">
+        Log out
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
-// import { mapState } from 'vuex'
-import { LOGIN } from '@/store/actions.type'
-// import ApiService from '@/services/api.service'
+import { mapState, mapGetters } from 'vuex'
+import { LOGIN, LOGOUT } from '@/store/actions.type'
 export default {
   name: 'hello',
   data () {
@@ -37,8 +44,24 @@ export default {
   methods: {
     onSubmit (email, password) {
       this.$store.dispatch(LOGIN, {email, password})
-        .then(() => this.$router.push({ name: 'Hello' }))
+        .then(() => {
+          this.$router.push({ path: '/' })
+        })
+    },
+    onLogout () {
+      this.$store.dispatch(LOGOUT)
+        .then(() => {
+          this.$router.push({ path: '/' })
+        })
     }
+  },
+  computed: {
+    ...mapState({
+      errors: state => state.auth.errors
+    }),
+    ...mapGetters([
+      'isAuthenticated'
+    ])
   }
 }
 </script>
