@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <form v-on:submit="onSubmit(email, password)">
+    <form v-on:submit.prevent="onSubmit(email, password)">
       <fieldset class="form-group">
         <input
           class="form-control form-control-lg"
@@ -24,8 +24,8 @@
 
 <script>
 // import { mapState } from 'vuex'
-// import { LOGIN } from '@/store/actions.type'
-import ApiService from '@/services/api.service'
+import { LOGIN } from '@/store/actions.type'
+// import ApiService from '@/services/api.service'
 export default {
   name: 'hello',
   data () {
@@ -36,8 +36,8 @@ export default {
   },
   methods: {
     onSubmit (email, password) {
-      console.log(email, password)
-      ApiService.post('users/login', {user: {'email': email, 'password': password}}).then(response => { console.log(response) })
+      this.$store.dispatch(LOGIN, {email, password})
+        .then(() => this.$router.push({ name: 'Hello' }))
     }
   }
 }

@@ -20,12 +20,11 @@ const getters = {
 
 const actions = {
   [LOGIN] (context, credentials) {
-    console.log(credentials)
+    let body = {}
     return new Promise((resolve) => {
       ApiService
-        .post('users/login', {user: credentials})
+        .post('users/login', {...body, user: credentials})
         .then(({data}) => {
-          console.log({data})
           context.commit(SET_AUTH, data.user)
           resolve(data)
         })
