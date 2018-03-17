@@ -2,12 +2,30 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
+import router from '@/router'
+import store from '@/store'
+import { CHECK_AUTH } from '@/store/actions.type'
+
+import ApiService from '@/services/api.service'
 
 Vue.config.productionTip = false
+
+ApiService.init()
+
+// Ensure we checked auth before each page load.
+router.beforeEach(
+  (to, from, next) => {
+    return Promise
+      .all([store.dispatch(CHECK_AUTH)])
+      .then(next)
+  }
+)
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  // template: '<App/>',
-  components: { 'app': App }
+  router,
+  store,
+  template: '<App/>',
+  components: { App }
 })
