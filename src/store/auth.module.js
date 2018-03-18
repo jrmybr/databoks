@@ -2,11 +2,13 @@ import ApiService from '@/services/api.service'
 import JwtService from '@/services/jwt.service'
 import { LOGIN, LOGOUT, REGISTER, CHECK_AUTH, UPDATE_USER } from './actions.type'
 import { SET_AUTH, PURGE_AUTH, SET_ERROR } from './mutations.type'
+import AuthService from '@/auth/AuthService'
 
 const state = {
   errors: null,
   user: {},
-  isAuthenticated: !!JwtService.getToken()
+  isAuthenticated: !!JwtService.getToken(),
+  auth: new AuthService()
 }
 
 const getters = {
@@ -20,18 +22,19 @@ const getters = {
 
 const actions = {
   [LOGIN] (context, credentials) {
-    let body = {}
-    return new Promise((resolve) => {
-      ApiService
-        .post('users/login', {...body, user: credentials})
-        .then(({data}) => {
-          context.commit(SET_AUTH, data.user)
-          resolve(data)
-        })
-        .catch(({response}) => {
-          context.commit(SET_ERROR, response.data.errors)
-        })
-    })
+    state.auth.login()
+    // let body = {}
+    // return new Promise((resolve) => {
+    //   ApiService
+    //     .post('users/login', {...body, user: credentials})
+    //     .then(({data}) => {
+    //       context.commit(SET_AUTH, data.user)
+    //       resolve(data)
+    //     })
+    //     .catch(({response}) => {
+    //       context.commit(SET_ERROR, response.data.errors)
+    //     })
+    // })
   },
   [LOGOUT] (context) {
     context.commit(PURGE_AUTH)
