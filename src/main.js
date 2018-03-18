@@ -17,7 +17,15 @@ router.beforeEach(
   (to, from, next) => {
     return Promise
       .all([store.dispatch(CHECK_AUTH)])
-      .then(next)
+      .then(
+        function (n) {
+          if (to.meta.requiresAuth === false | to.meta.requiresAuth & store.getters.isAuthenticated) {
+            next()
+          } else {
+            next('/')
+          }
+        }
+      )
   }
 )
 
